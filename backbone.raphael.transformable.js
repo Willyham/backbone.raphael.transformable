@@ -36,10 +36,8 @@
                 this._initialState = this._raphaelElement.attrs;
                 this.setElement(this._raphaelElement);
             }
-            this.listenTo(this.model, 'change', _.bind(this._applyAttributes,this));
-            this.listenTo(this.model, 'change:transformationAttributes', $.noop);
             this.applyAttributes();
-
+            this.listenTo(this.model, 'change', _.bind(this._applyAttributes,this));
             this._freeTransform = this._paper.freeTransform(this._raphaelElement, transformOptions, _.bind(this._saveTransformation, this));
             var attributes = this.model.get('transformationAttributes');
             if (attributes){
@@ -62,12 +60,13 @@
             }
         },
 
-        _applyAttributes: function(model, event){
+        _applyAttributes: function(model){
             this.applyAttributes(model.attributes);
         },
 
         applyAttributes: function(attr){
-            attr = attr || _.omit(this.model.toJSON(),['x','y','width','height']);
+            attr = attr || this.model.toJSON();
+            attr = _.omit(attr, ['x','y','width','height']);
             this._raphaelElement.attr(attr);
         },
 
