@@ -19,7 +19,7 @@
     Backbone.RaphaelTransformableView = Backbone.RaphaelView.extend({
 
         defaults: {
-            // Set to false i
+            // Set to false to not save the model after a transformation
             saveOnChange: true
         },
 
