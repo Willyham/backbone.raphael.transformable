@@ -18,6 +18,11 @@
 
     Backbone.RaphaelTransformableView = Backbone.RaphaelView.extend({
 
+        defaults: {
+            // Set to false i
+            saveOnChange: true
+        },
+
         _raphaelElement: null,
         _paper: null,
         _initialState: null,
@@ -38,7 +43,7 @@
             this._freeTransform = this._paper.freeTransform(this._raphaelElement, transformOptions, _.bind(this._saveTransformation, this));
             var attributes = this.model.get('transformationAttributes');
             if (attributes){
-                this.applySavedTransformationAttributes(attributes);
+                this.applyTransformationAttributes(attributes);
             }
         },
 
@@ -51,7 +56,9 @@
         _saveTransformation : function(ft, events){
             if(this._isTransformationEnd(events)){
                 this.model.set('transformationAttributes', this._freeTransform.attrs);
-                this.model.save();
+                if(this.options.saveOnChange){
+                    this.model.save();
+                }
             }
         },
 
@@ -64,7 +71,7 @@
             this._raphaelElement.attr(attr);
         },
 
-        applySavedTransformationAttributes: function(attributes){
+        applyTransformationAttributes: function(attributes){
             this._freeTransform.attrs = attributes;
             this._freeTransform.updateHandles();
             this._freeTransform.apply();
@@ -82,4 +89,3 @@
 
     return Backbone;
 }));
-

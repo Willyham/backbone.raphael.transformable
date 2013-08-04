@@ -1,0 +1,20 @@
+{
+  "name": "backbone.raphael.transformable",
+  "version": "0.1.0",
+  "main": "backbone.raphael.transformable.js",
+  "dependencies": {
+    "backbone.raphael": "~1.0.0",
+    "jquery": "~2.0.3",
+    "raphael": "~2.1.0",
+    "raphael.free_transform": "*",
+    "requirejs": "~2.1.8"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
