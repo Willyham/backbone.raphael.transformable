@@ -20,30 +20,66 @@
 
         _raphaelElement: null,
         _paper: null,
+        _initialState: null,
+        _freeTransform: null,
 
         initElement: function(raphaelElement, transformOptions){
-            if(_.isNull(this._element)){
-                this._element = raphaelElement;
-                this._paper = this._element.paper;
-                this.setElement(this._element);
+            transformOptions = transformOptions || {};
+            if(_.isNull(this._raphaelElement)){
+                this._raphaelElement = raphaelElement;
+                this._paper = this._raphaelElement.paper;
+                this._initialState = this._raphaelElement.attrs;
+                this.setElement(this._raphaelElement);
             }
-            this._element.attr(_.omit(this.model.toJSON(),['x','y','width','height']));
-            this._paper.freeTransform(this._element, transformOptions, _.bind(this._handleEvents, this));
+            this.listenTo(this.model, 'change', _.bind(this._applyAttributes,this));
+            this.listenTo(this.model, 'change:transformationAttributes', $.noop);
+            this.applyAttributes();
+
+            this._freeTransform = this._paper.freeTransform(this._raphaelElement, transformOptions, _.bind(this._saveTransformation, this));
+            var attributes = this.model.get('transformationAttributes');
+            if (attributes){
+                this.applySavedTransformationAttributes(attributes);
+            }
         },
 
-        _handleEvents: function(ft, events){
-            if(_.contains(events, 'drag end')){
-                this.applyTranslation(ft.attrs.translate.x,ft.attrs.translate.y);
+        _isTransformationEnd: function(events){
+            return _.any(events, function(event){
+                return _.contains(event.split(' '), 'end');
+            });
+        },
+
+        _saveTransformation : function(ft, events){
+            if(this._isTransformationEnd(events)){
+                this.model.set('transformationAttributes', this._freeTransform.attrs);
                 this.model.save();
             }
         },
 
-        applyTranslation: function(xDelta, yDelta){
-            this.model.set({
-                x: this.model.get('x') +  xDelta,
-                y: this.model.get('y') +  yDelta
-            });
+        _applyAttributes: function(model, event){
+            this.applyAttributes(model.attributes);
+        },
+
+        applyAttributes: function(attr){
+            attr = attr || _.omit(this.model.toJSON(),['x','y','width','height']);
+            this._raphaelElement.attr(attr);
+        },
+
+        applySavedTransformationAttributes: function(attributes){
+            this._freeTransform.attrs = attributes;
+            this._freeTransform.updateHandles();
+            this._freeTransform.apply();
         }
     });
+
+    Backbone.RaphaelTransformableModel = Backbone.Model.extend({
+        defaults:{
+            x: 0,
+            y: 0,
+            fill: '#00ff00',
+            stroke: '#000000'
+        }
+    });
+
     return Backbone;
 }));
+
