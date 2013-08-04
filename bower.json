@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "main": "backbone.raphael.transformable.js",
   "dependencies": {
-    "backbone.raphael": "~1.0.0",
+    "requirejs": "~2.1.8",
     "jquery": "~2.0.3",
     "raphael": "~2.1.0",
-    "raphael.free_transform": "*",
-    "requirejs": "~2.1.8"
+    "backbone.raphael-amd": "~1.1.0",
+    "raphael.free_transform": "*"
   },
   "ignore": [
     "**/.*",
