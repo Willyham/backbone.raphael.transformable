@@ -1,6 +1,6 @@
 {
   "name": "backbone.raphael.transformable",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "backbone.raphael.transformable.js",
   "dependencies": {
     "requirejs": "~2.1.8",

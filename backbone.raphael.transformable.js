@@ -24,21 +24,21 @@
         },
 
         _raphaelElement: null,
-        _paper: null,
-        _initialState: null,
         _freeTransform: null,
 
         initElement: function(raphaelElement, transformOptions){
             transformOptions = transformOptions || {};
-            if(_.isNull(this._raphaelElement)){
-                this._raphaelElement = raphaelElement;
-                this._paper = this._raphaelElement.paper;
-                this._initialState = this._raphaelElement.attrs;
-                this.setElement(this._raphaelElement);
-            }
+
+            // Set the element, wire events and set initial attributes
+            this._raphaelElement = raphaelElement;
+            this.setElement(this._raphaelElement);
             this.applyAttributes();
+
+            // Setup events
             this.listenTo(this.model, 'change', _.bind(this._applyAttributes,this));
-            this._freeTransform = this._paper.freeTransform(this._raphaelElement, transformOptions, _.bind(this._saveTransformation, this));
+            this.listenTo(this.model, 'destroy', _.bind(this._destroyFreeTransform, this));
+
+            this._freeTransform = this.options.paper.freeTransform(this._raphaelElement, transformOptions, _.bind(this._saveTransformation, this));
             var attributes = this.model.get('transformationAttributes');
             if (attributes){
                 this.applyTransformationAttributes(attributes);
@@ -62,6 +62,20 @@
 
         _applyAttributes: function(model){
             this.applyAttributes(model.attributes);
+        },
+
+        _destroyFreeTransform: function(){
+            this._raphaelElement.remove();
+            this._raphaelElement = null;
+            this._freeTransform.unplug();
+            this._freeTransform = null;
+        },
+
+        remove: function(){
+            this._destroyFreeTransform();
+            this.$el.remove();
+            this.stopListening();
+            return this;
         },
 
         applyAttributes: function(attr){
