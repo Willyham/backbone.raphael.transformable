@@ -5,7 +5,7 @@ A Backbone view and model which provide a transformable Raphael JS element.
 
 ## Live Demo
 
-A live demo can be found [here](http://www.willdemaine.co.uk/demos/transformable/). This demo uses backbone and localStorage to persist the drawings.
+A live demo can be found [here](http://www.willdemaine.co.uk/demos/transformable/app/). This demo uses backbone and localStorage to persist the drawings.
 
 ### Installation
 
